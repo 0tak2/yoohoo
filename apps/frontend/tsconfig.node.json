@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["node"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler"
-  },
-  "include": ["vite.config.ts", "eslint.config.js"]
-}

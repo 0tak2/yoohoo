@@ -4,22 +4,30 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "pnpm typecheck && vite build",
+    "dev": "next dev -p 3001",
+    "build": "pnpm typecheck && next build",
     "lint": "eslint .",
     "test": "vitest run",
-    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false && tsc -p tsconfig.node.json --noEmit --pretty false"
+    "typecheck": "tsc -p tsconfig.json --noEmit --pretty false"
   },
   "dependencies": {
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@fullcalendar/react": "^6.1.19",
+    "@hookform/resolvers": "^5.2.2",
+    "@yoohoo/shared": "workspace:*",
+    "next": "^15.5.9",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.69.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
-    "@vitejs/plugin-react": "^4.3.4",
+    "babel-plugin-react-compiler": "^19.1.0-rc.3",
     "jsdom": "^25.0.1",
     "vite": "^6.0.7",
     "vitest": "^3.2.4"
