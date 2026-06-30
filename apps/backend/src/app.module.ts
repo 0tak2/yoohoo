@@ -1,13 +1,14 @@
 import { Module } from "@nestjs/common";
 import { AdminController } from "./plans/admin.controller.js";
 import { AuthService } from "./plans/auth.service.js";
+import { HealthController } from "./health.controller.js";
 import { InMemoryPlanRepository } from "./plans/in-memory-plan.repository.js";
 import { PLAN_REPOSITORY } from "./plans/plan-repository.token.js";
 import { PlansController } from "./plans/plans.controller.js";
 import { PlansService } from "./plans/plans.service.js";
 
 @Module({
-  controllers: [PlansController, AdminController],
+  controllers: [PlansController, AdminController, HealthController],
   providers: [
     PlansService,
     AuthService,
@@ -18,4 +19,3 @@ import { PlansService } from "./plans/plans.service.js";
   ]
 })
 export class AppModule {}
-
