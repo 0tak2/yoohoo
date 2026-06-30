@@ -4,15 +4,16 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: [".next/**", "dist/**", "next-env.d.ts"]
+    ignores: ["dist/**"]
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.ts"],
     languageOptions: {
       ecmaVersion: 2022,
-      globals: globals.browser
+      globals: globals.node
     }
   }
 );
+

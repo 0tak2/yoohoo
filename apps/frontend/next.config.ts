@@ -1,4 +1,6 @@
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   transpilePackages: ["@yoohoo/shared"],
   webpack(config) {
     config.resolve.extensionAlias = {
@@ -13,3 +15,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
