@@ -31,6 +31,15 @@ test("creates a vacation plan and submits a participant response", async ({
   await page.getByRole("button", { name: "계획 만들기" }).click();
 
   await page.getByLabel("관리자 암호").fill("secret123");
+  await page.getByRole("button", { name: "질문 추가" }).click();
+  await page.getByLabel("질문").fill("술먹고싶어?");
+  await page.getByLabel("답변 타입").selectOption("boolean");
+  await page.getByRole("button", { name: "질문 추가" }).click();
+  await page.getByLabel("질문").nth(1).fill("인당 예산 얼마 생각해?");
+  await page.getByLabel("답변 타입").nth(1).selectOption("number");
+  await page.getByRole("button", { name: "질문 추가" }).click();
+  await page.getByLabel("질문").nth(2).fill("건의사항있어?");
+  await page.getByLabel("답변 타입").nth(2).selectOption("string");
   await page.getByRole("button", { name: "계획 만들기" }).click();
 
   await expect(page.getByText("공유 URL이 생겼어요")).toBeVisible();
@@ -48,6 +57,10 @@ test("creates a vacation plan and submits a participant response", async ({
   await moveCalendarToMonth(page, "2026년 8월");
   await page.getByRole("button", { name: /2026-08-01 선택/ }).click();
   await page.getByRole("button", { name: /2026-08-04 선택/ }).click();
+  await expect(page.getByText("술먹고싶어?")).toBeVisible();
+  await page.getByLabel("술먹고싶어?").selectOption("true");
+  await page.getByLabel("인당 예산 얼마 생각해?").fill("300000");
+  await page.getByLabel("건의사항있어?").fill("바다 가까운 곳이면 좋겠어.");
   await page.getByRole("button", { name: "답변 제출" }).click();
 
   await expect(page.getByText("답변이 저장됐어요.")).toBeVisible();

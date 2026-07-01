@@ -2,7 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import {
+  useFieldArray,
+  useForm,
+  useWatch,
+  type FieldErrors,
+  type SubmitErrorHandler
+} from "react-hook-form";
 import type { z } from "zod";
 import {
   type CustomAnswerInput,
@@ -17,6 +23,7 @@ type ParticipantResponseFormInput = z.input<typeof submitParticipantResponseSche
 export function ParticipantResponseForm({ handle }: { handle: string }) {
   const [plan, setPlan] = useState<PublicPlan | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const form = useForm<
     ParticipantResponseFormInput,
     unknown,
@@ -53,15 +60,24 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
               : question.type === "number"
                 ? 0
                 : ""
-        })) as CustomAnswerInput[]
+        })) as CustomAnswerInput[],
+        {
+          shouldDirty: false,
+          shouldValidate: false
+        }
       );
     });
   }, [form, handle]);
 
   async function onSubmit(input: SubmitParticipantResponseInput) {
+    setToastMessage(null);
     await submitParticipantResponse(handle, input);
     setSubmitted(true);
   }
+
+  const onInvalid: SubmitErrorHandler<ParticipantResponseFormInput> = (errors) => {
+    setToastMessage(getFirstErrorMessage(errors) ?? "입력값을 다시 확인하세요.");
+  };
 
   if (submitted) {
     return (
@@ -75,7 +91,7 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
   }
 
   return (
-    <form className="panel" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="panel" noValidate onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
       <h2>{plan?.title ?? "계획을 불러오는 중"}</h2>
       <label>
         닉네임
@@ -121,12 +137,23 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
       <section className="grid">
         <h3>추가 질문</h3>
         {plan?.questions.map((question, index) => (
-          <label key={question.id}>
-            {question.label}
-            <input type="hidden" {...form.register(`answers.${index}.questionId`)} />
-            <input type="hidden" {...form.register(`answers.${index}.type`)} />
+          <div className="grid" key={question.id}>
+            <input
+              type="hidden"
+              {...form.register(`answers.${index}.questionId`, {
+                value: question.id
+              })}
+            />
+            <input
+              type="hidden"
+              {...form.register(`answers.${index}.type`, {
+                value: question.type
+              })}
+            />
+            <label htmlFor={`answer-${question.id}`}>{question.label}</label>
             {question.type === "boolean" ? (
               <select
+                id={`answer-${question.id}`}
                 {...form.register(`answers.${index}.value`, {
                   setValueAs: (value) => value === "true"
                 })}
@@ -137,19 +164,74 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
             ) : null}
             {question.type === "number" ? (
               <input
+                id={`answer-${question.id}`}
                 type="number"
                 {...form.register(`answers.${index}.value`, { valueAsNumber: true })}
               />
             ) : null}
             {question.type === "string" ? (
-              <textarea {...form.register(`answers.${index}.value`)} />
+              <textarea
+                id={`answer-${question.id}`}
+                {...form.register(`answers.${index}.value`)}
+              />
             ) : null}
-          </label>
+          </div>
         ))}
       </section>
       <button disabled={form.formState.isSubmitting || !plan} type="submit">
         답변 제출
       </button>
+      {toastMessage ? (
+        <p className="toast" role="alert">
+          {toastMessage}
+        </p>
+      ) : null}
     </form>
   );
+}
+
+function getFirstErrorMessage(
+  errors: FieldErrors<ParticipantResponseFormInput>
+): string | null {
+  return getFirstErrorMessageAtPath(errors, "");
+}
+
+function getFirstErrorMessageAtPath(
+  errors: FieldErrors<ParticipantResponseFormInput>,
+  path: string
+): string | null {
+  const firstError = Object.values(errors)[0];
+  const firstKey = Object.keys(errors)[0];
+  const nextPath = firstKey ? [path, firstKey].filter(Boolean).join(".") : path;
+
+  if (!firstError) {
+    return null;
+  }
+
+  if ("message" in firstError && firstError.message) {
+    return nextPath
+      ? `${nextPath}: ${String(firstError.message)}`
+      : String(firstError.message);
+  }
+
+  if (Array.isArray(firstError)) {
+    for (const [nestedIndex, nestedError] of firstError.entries()) {
+      const message: string | null = getFirstErrorMessageAtPath(
+        nestedError as FieldErrors<ParticipantResponseFormInput>,
+        `${nextPath}.${nestedIndex}`
+      );
+      if (message) {
+        return message;
+      }
+    }
+  }
+
+  if (typeof firstError === "object") {
+    return getFirstErrorMessageAtPath(
+      firstError as FieldErrors<ParticipantResponseFormInput>,
+      nextPath
+    );
+  }
+
+  return null;
 }
