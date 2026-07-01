@@ -168,6 +168,16 @@ p {
   font-weight: 700;
 }
 
+.toast {
+  margin: 0;
+  border: 1px solid #d92d20;
+  border-radius: 6px;
+  padding: 14px 16px;
+  background: #fff4f2;
+  color: #b42318;
+  font-weight: 800;
+}
+
 .success {
   color: #196b39;
   font-weight: 800;

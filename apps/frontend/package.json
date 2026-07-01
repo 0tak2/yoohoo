@@ -9,6 +9,7 @@
     "build": "pnpm typecheck && next build",
     "start": "next start -H 0.0.0.0 -p 3001",
     "lint": "eslint .",
+    "pretest": "pnpm --filter @yoohoo/shared build",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit --pretty false"
   },

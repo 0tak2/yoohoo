@@ -13,7 +13,7 @@ export const customQuestionSchema = z.object({
 
 export const createPlanSchema = z.object({
   title: z.string().trim().min(1).max(80),
-  adminPassword: z.string().min(8).max(120),
+  adminPassword: z.string().min(8, "관리자 암호는 8자 이상이어야 합니다.").max(120),
   questions: z.array(customQuestionSchema).max(20).default([])
 });
 
@@ -70,4 +70,3 @@ export type SubmitParticipantResponseInput = z.infer<
   typeof submitParticipantResponseSchema
 >;
 export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
-

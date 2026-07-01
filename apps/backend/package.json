@@ -9,6 +9,7 @@
     "build": "pnpm clean && tsc -p tsconfig.json",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "lint": "eslint .",
+    "pretest": "pnpm --filter @yoohoo/shared build",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit --pretty false"
   },

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, type SubmitErrorHandler } from "react-hook-form";
 import type { z } from "zod";
 import { createPlanSchema, type CreatePlanInput } from "@yoohoo/shared";
 import { createPlan } from "../lib/api";
@@ -12,6 +12,7 @@ type CreatePlanFormInput = z.input<typeof createPlanSchema>;
 
 export function CreatePlanForm() {
   const [createdPlan, setCreatedPlan] = useState<CreatedPlan | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const form = useForm<CreatePlanFormInput, unknown, CreatePlanInput>({
     resolver: zodResolver(createPlanSchema),
     defaultValues: {
@@ -26,12 +27,21 @@ export function CreatePlanForm() {
   });
 
   async function onSubmit(input: CreatePlanInput) {
+    setToastMessage(null);
     const plan = await createPlan(input);
     setCreatedPlan(plan);
   }
 
+  const onInvalid: SubmitErrorHandler<CreatePlanFormInput> = (errors) => {
+    const message =
+      errors.adminPassword?.message ??
+      errors.title?.message ??
+      "입력값을 다시 확인하세요.";
+    setToastMessage(String(message));
+  };
+
   return (
-    <form className="panel" onSubmit={form.handleSubmit(onSubmit)}>
+    <form className="panel" onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
       <label>
         계획 이름
         <input {...form.register("title")} />
@@ -81,6 +91,11 @@ export function CreatePlanForm() {
       <button disabled={form.formState.isSubmitting} type="submit">
         계획 만들기
       </button>
+      {toastMessage ? (
+        <p className="toast" role="alert">
+          {toastMessage}
+        </p>
+      ) : null}
       {createdPlan ? (
         <section className="item">
           <h3>공유 URL이 생겼어요</h3>
