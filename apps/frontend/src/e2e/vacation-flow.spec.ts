@@ -66,6 +66,7 @@ test("creates a vacation plan and submits a participant response", async ({
   await expect(page.getByText("답변이 저장됐어요.")).toBeVisible();
   await page.getByRole("button", { name: "다른 사람 답변 보기" }).click();
 
-  await expect(page.getByText("동동")).toBeVisible();
+  await expect(page.locator(".fc-event-title").getByText("동동").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "동동" })).toBeVisible();
   await expect(page.getByText("희망 숙박수: 2박")).toBeVisible();
 });

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildVisibleCalendarEvents } from "./calendar-events";
+import {
+  buildParticipantCalendarEvents,
+  buildVisibleCalendarEvents
+} from "./calendar-events";
 
 describe("buildVisibleCalendarEvents", () => {
   it("filters calendar events by enabled participant ids", () => {
@@ -38,3 +41,44 @@ describe("buildVisibleCalendarEvents", () => {
   });
 });
 
+describe("buildParticipantCalendarEvents", () => {
+  it("builds colored calendar events from participant availability ranges", () => {
+    const events = buildParticipantCalendarEvents([
+      {
+        id: "a",
+        nickname: "동동",
+        desiredNights: 2,
+        availabilityRanges: [
+          { startDate: "2026-08-01", endDate: "2026-08-04" }
+        ]
+      },
+      {
+        id: "b",
+        nickname: "모모",
+        desiredNights: 3,
+        availabilityRanges: [
+          { startDate: "2026-08-03", endDate: "2026-08-05" }
+        ]
+      }
+    ]);
+
+    expect(events).toEqual([
+      {
+        id: "a:2026-08-01:2026-08-04",
+        participantId: "a",
+        participantNickname: "동동",
+        start: "2026-08-01",
+        end: "2026-08-04",
+        color: "#2563eb"
+      },
+      {
+        id: "b:2026-08-03:2026-08-05",
+        participantId: "b",
+        participantNickname: "모모",
+        start: "2026-08-03",
+        end: "2026-08-05",
+        color: "#16a34a"
+      }
+    ]);
+  });
+});
