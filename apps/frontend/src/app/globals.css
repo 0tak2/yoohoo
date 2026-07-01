@@ -79,7 +79,8 @@ label {
 }
 
 .page {
-  width: min(960px, 100%);
+  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
   padding: 48px 20px 80px;
 }
@@ -100,6 +101,7 @@ label {
 h1 {
   max-width: 12ch;
   margin: 0;
+  font-size: 3.25rem;
   font-size: clamp(3.25rem, 10vw, 7rem);
   line-height: 0.95;
   letter-spacing: 0;
@@ -107,6 +109,7 @@ h1 {
 
 h2 {
   margin: 0;
+  font-size: 2rem;
   font-size: clamp(2rem, 5vw, 3.5rem);
   line-height: 1.05;
   letter-spacing: 0;
@@ -129,11 +132,11 @@ p {
 }
 
 .notice {
-  border-left: 4px solid #111;
-  padding: 14px 16px;
-  background: #f0f0ea;
-  color: #2d2d2a;
-  line-height: 1.6;
+  max-width: 680px;
+  margin: 0;
+  color: #76766f;
+  font-size: 0.82rem;
+  line-height: 1.55;
 }
 
 .panel {
