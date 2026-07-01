@@ -7,6 +7,7 @@
     "dev": "next dev -p 3001",
     "e2e": "playwright test",
     "build": "pnpm typecheck && next build",
+    "start": "next start -H 0.0.0.0 -p 3001",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit --pretty false"

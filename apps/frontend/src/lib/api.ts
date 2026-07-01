@@ -3,8 +3,9 @@ import type {
   QuestionType,
   SubmitParticipantResponseInput
 } from "@yoohoo/shared";
+import { getApiBaseUrl } from "./api-base-url";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000";
+const apiBaseUrl = getApiBaseUrl();
 
 export type PublicPlan = {
   id: string;
@@ -101,4 +102,3 @@ async function request<T>(path: string, init: RequestInit = {}) {
 
   return (await response.json()) as T;
 }
-

@@ -34,6 +34,25 @@ pnpm e2e
 The frontend dev server runs on port `3001`. The backend dev server runs on port
 `3000`.
 
+For a production-style local run after build:
+
+```bash
+pnpm --filter @yoohoo/backend start:e2e
+pnpm --filter @yoohoo/frontend start
+ngrok http 3001
+```
+
+The frontend listens on `0.0.0.0:3001` in `start` mode. Backend CORS can be
+configured with `.env`:
+
+```bash
+FRONTEND_ORIGINS=https://example.ngrok-free.app,http://localhost:3001
+```
+
+Ngrok subdomains under `ngrok-free.app` and `ngrok.app` are allowed by default.
+The frontend proxies `/api/*` to `BACKEND_ORIGIN` through Next rewrites, so a
+single frontend ngrok URL can exercise the app locally.
+
 ## Product Note
 
 모든 주요 화면은 개인정보를 적거나 묻지 말라는 고지를 포함합니다. 이 서비스는

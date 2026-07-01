@@ -19,6 +19,7 @@
     "@yoohoo/shared": "workspace:*",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
     "drizzle-orm": "^0.45.1",
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.16.3",
