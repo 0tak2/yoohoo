@@ -56,6 +56,9 @@ export const submitParticipantResponseSchema = z.object({
   desiredNights: z.number().int().min(1).max(30),
   availabilityRanges: z.array(availabilityRangeSchema).min(1).max(20),
   answers: z.array(customAnswerSchema).default([])
+}).refine((input) => !hasOverlappingRanges(input.availabilityRanges), {
+  message: "가능 일정은 서로 겹칠 수 없습니다.",
+  path: ["availabilityRanges"]
 });
 
 export const adminLoginSchema = z.object({
@@ -70,3 +73,15 @@ export type SubmitParticipantResponseInput = z.infer<
   typeof submitParticipantResponseSchema
 >;
 export type AdminLoginInput = z.infer<typeof adminLoginSchema>;
+
+function hasOverlappingRanges(ranges: AvailabilityRangeInput[]) {
+  const sortedRanges = [...ranges].sort((left, right) =>
+    left.startDate.localeCompare(right.startDate)
+  );
+
+  return sortedRanges.some((range, index) => {
+    const previousRange = sortedRanges[index - 1];
+
+    return Boolean(previousRange && range.startDate <= previousRange.endDate);
+  });
+}

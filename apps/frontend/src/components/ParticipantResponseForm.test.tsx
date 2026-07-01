@@ -106,4 +106,29 @@ describe("ParticipantResponseForm", () => {
       });
     });
   });
+
+  it("does not submit when availability ranges overlap", async () => {
+    render(<ParticipantResponseForm handle="abc123defg" />);
+
+    await screen.findByText("술먹고싶어?");
+
+    fireEvent.change(screen.getByLabelText("닉네임"), {
+      target: { value: "동동" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: /2026-07-10 선택/ }));
+    fireEvent.click(screen.getByRole("button", { name: /2026-07-12 선택/ }));
+    fireEvent.click(screen.getByRole("button", { name: "일정 추가" }));
+    fireEvent.click(
+      screen.getAllByRole("button", { name: /2026-07-12 선택/ })[1] as Element
+    );
+    fireEvent.click(
+      screen.getAllByRole("button", { name: /2026-07-15 선택/ })[1] as Element
+    );
+    fireEvent.click(screen.getByRole("button", { name: "답변 제출" }));
+
+    expect((await screen.findByRole("alert")).textContent).toContain(
+      "가능 일정은 서로 겹칠 수 없습니다."
+    );
+    expect(submitParticipantResponse).not.toHaveBeenCalled();
+  });
 });

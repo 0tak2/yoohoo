@@ -59,4 +59,18 @@ describe("submitParticipantResponseSchema", () => {
       })
     ).toThrow();
   });
+
+  it("rejects overlapping availability ranges", () => {
+    expect(() =>
+      submitParticipantResponseSchema.parse({
+        nickname: "동동",
+        desiredNights: 2,
+        availabilityRanges: [
+          { startDate: "2026-08-01", endDate: "2026-08-04" },
+          { startDate: "2026-08-04", endDate: "2026-08-06" }
+        ],
+        answers: []
+      })
+    ).toThrow("가능 일정은 서로 겹칠 수 없습니다.");
+  });
 });
