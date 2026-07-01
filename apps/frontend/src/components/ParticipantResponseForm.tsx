@@ -178,9 +178,14 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
           </div>
         ))}
       </section>
-      <button disabled={form.formState.isSubmitting || !plan} type="submit">
-        답변 제출
-      </button>
+      <div className="row">
+        <button disabled={form.formState.isSubmitting || !plan} type="submit">
+          답변 제출
+        </button>
+        <a className="text-link" href={`/p/${handle}/results`}>
+          다른 사람 답변 보기
+        </a>
+      </div>
       {toastMessage ? (
         <p className="toast" role="alert">
           {toastMessage}

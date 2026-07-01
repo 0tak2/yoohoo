@@ -20,6 +20,13 @@ a {
   color: inherit;
 }
 
+.text-link {
+  color: #111;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 button,
 input,
 select,
@@ -153,6 +160,18 @@ p {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+}
+
+.link-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.link-row .text-link {
+  overflow-wrap: anywhere;
 }
 
 .list {
@@ -300,6 +319,10 @@ p {
   }
 
   .calendar-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .link-row {
     grid-template-columns: 1fr;
   }
 }

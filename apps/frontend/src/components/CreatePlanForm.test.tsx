@@ -9,8 +9,17 @@ vi.mock("../lib/api", () => ({
 }));
 
 describe("CreatePlanForm", () => {
+  const writeText = vi.fn();
+
   beforeEach(() => {
     vi.mocked(createPlan).mockReset();
+    writeText.mockReset();
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText
+      }
+    });
     vi.mocked(createPlan).mockResolvedValue({
       id: "plan-1",
       handle: "abc123defg",
@@ -48,6 +57,27 @@ describe("CreatePlanForm", () => {
         adminPassword: "secret12",
         questions: []
       });
+    });
+  });
+
+  it("renders created URLs as links and copies them", async () => {
+    render(<CreatePlanForm />);
+
+    fireEvent.change(screen.getByLabelText("관리자 암호"), {
+      target: { value: "secret12" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: "계획 만들기" }));
+
+    const shareLink = await screen.findByRole("link", { name: /톡방 공유/ });
+    const adminLink = screen.getByRole("link", { name: /관리자/ });
+
+    expect(shareLink.getAttribute("href")).toBe("http://localhost:3000/p/abc123defg");
+    expect(adminLink.getAttribute("href")).toBe("http://localhost:3000/admin/abc123defg");
+
+    fireEvent.click(screen.getByRole("button", { name: "톡방 링크 복사" }));
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith("http://localhost:3000/p/abc123defg");
     });
   });
 });

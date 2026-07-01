@@ -53,6 +53,16 @@ describe("ParticipantResponseForm", () => {
     });
   });
 
+  it("shows the public results link before submitting a response", async () => {
+    render(<ParticipantResponseForm handle="abc123defg" />);
+
+    await screen.findByText("술먹고싶어?");
+
+    expect(
+      screen.getByRole("link", { name: "다른 사람 답변 보기" }).getAttribute("href")
+    ).toBe("/p/abc123defg/results");
+  });
+
   it("renders custom questions and submits typed answers", async () => {
     render(<ParticipantResponseForm handle="abc123defg" />);
 

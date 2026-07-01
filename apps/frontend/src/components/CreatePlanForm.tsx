@@ -32,6 +32,11 @@ export function CreatePlanForm() {
     setCreatedPlan(plan);
   }
 
+  async function copyLink(url: string) {
+    await navigator.clipboard.writeText(url);
+    setToastMessage("링크를 복사했어요.");
+  }
+
   const onInvalid: SubmitErrorHandler<CreatePlanFormInput> = (errors) => {
     const message =
       errors.adminPassword?.message ??
@@ -99,10 +104,45 @@ export function CreatePlanForm() {
       {createdPlan ? (
         <section className="item">
           <h3>공유 URL이 생겼어요</h3>
-          <p>톡방 공유: {window.location.origin + createdPlan.shareUrl}</p>
-          <p>관리자: {window.location.origin + createdPlan.adminUrl}</p>
+          <LinkRow
+            label="톡방 공유"
+            url={window.location.origin + createdPlan.shareUrl}
+            onCopy={copyLink}
+          />
+          <LinkRow
+            label="관리자"
+            url={window.location.origin + createdPlan.adminUrl}
+            onCopy={copyLink}
+          />
         </section>
       ) : null}
     </form>
+  );
+}
+
+function LinkRow({
+  label,
+  url,
+  onCopy
+}: {
+  label: string;
+  url: string;
+  onCopy: (url: string) => Promise<void>;
+}) {
+  return (
+    <div className="link-row">
+      <a className="text-link" href={url}>
+        {label}: {url}
+      </a>
+      <button
+        className="secondary compact-button"
+        type="button"
+        onClick={() => {
+          void onCopy(url);
+        }}
+      >
+        {label === "톡방 공유" ? "톡방 링크 복사" : "관리자 링크 복사"}
+      </button>
+    </div>
   );
 }
