@@ -2,13 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import type { z } from "zod";
 import {
   type CustomAnswerInput,
   submitParticipantResponseSchema,
   type SubmitParticipantResponseInput
 } from "@yoohoo/shared";
+import { AvailabilityRangeCalendar } from "./AvailabilityRangeCalendar";
 import { fetchPublicPlan, submitParticipantResponse, type PublicPlan } from "../lib/api";
 
 type ParticipantResponseFormInput = z.input<typeof submitParticipantResponseSchema>;
@@ -30,6 +31,10 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
     }
   });
   const ranges = useFieldArray({
+    control: form.control,
+    name: "availabilityRanges"
+  });
+  const watchedRanges = useWatch({
     control: form.control,
     name: "availabilityRanges"
   });
@@ -83,22 +88,26 @@ export function ParticipantResponseForm({ handle }: { handle: string }) {
       <section className="grid">
         <h3>가능한 일정</h3>
         {ranges.fields.map((field, index) => (
-          <div className="two-columns" key={field.id}>
-            <label>
-              시작일
-              <input type="date" {...form.register(`availabilityRanges.${index}.startDate`)} />
-            </label>
-            <label>
-              종료일
-              <input type="date" {...form.register(`availabilityRanges.${index}.endDate`)} />
-            </label>
-            <button
-              className="secondary"
-              type="button"
-              onClick={() => ranges.remove(index)}
-            >
-              일정 삭제
-            </button>
+          <div key={field.id}>
+            <input type="hidden" {...form.register(`availabilityRanges.${index}.startDate`)} />
+            <input type="hidden" {...form.register(`availabilityRanges.${index}.endDate`)} />
+            <AvailabilityRangeCalendar
+              canRemove={ranges.fields.length > 1}
+              endDate={watchedRanges?.[index]?.endDate ?? ""}
+              index={index}
+              startDate={watchedRanges?.[index]?.startDate ?? ""}
+              onChange={(nextRange) => {
+                form.setValue(`availabilityRanges.${index}.startDate`, nextRange.startDate, {
+                  shouldDirty: true,
+                  shouldValidate: true
+                });
+                form.setValue(`availabilityRanges.${index}.endDate`, nextRange.endDate, {
+                  shouldDirty: true,
+                  shouldValidate: true
+                });
+              }}
+              onRemove={() => ranges.remove(index)}
+            />
           </div>
         ))}
         <button
