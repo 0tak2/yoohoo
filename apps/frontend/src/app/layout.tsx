@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Yoohoo",
-  description: "친구들과 여름 휴가 일정을 맞추는 간단한 서비스"
+  title: "유리들의 후가",
+  description: "단체 대화방에 공유하는 휴가 일정 조율 서비스"
 };
 
 export default function RootLayout({
@@ -15,4 +15,3 @@ export default function RootLayout({
     </html>
   );
 }
-
